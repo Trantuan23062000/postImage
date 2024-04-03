@@ -16,8 +16,8 @@ class Home_controller extends Controller
 {
     public function index()
     {
-        $photos = Photo::all(); // Lấy tất cả các bài đăng từ cơ sở dữ liệu
-        $photos = Photo::with('user')->get();
+        //$photos = Photo::with('user')->get();
+        $photos = Photo::paginate(1);
         return view('home.index', compact('photos'));
     }
 

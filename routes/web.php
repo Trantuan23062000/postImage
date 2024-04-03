@@ -28,7 +28,6 @@ Route::get('/viewPost/{id}', [Post_controller::class,'show'])->name('viewPost');
 
 
 
-
 Route::middleware(['auth'])->group(function(){
 Route::get('/EditPost/{id}', [Photo_controller::class, 'edit']) ->name('postEdit');
 Route::put('/updatePost/{id}',[Photo_controller::class,'update'])->name('updatePost');

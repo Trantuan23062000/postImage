@@ -11,7 +11,6 @@ class Post_controller extends Controller
     public function index()
     {
         $userPhotos = Photo::where('user_id', auth()->id())->get();
-        //$photos = Photo::paginate(1);
         return view('Posts.mypost', compact('userPhotos'));
     }
 

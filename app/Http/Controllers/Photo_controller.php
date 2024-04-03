@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Photo;
 use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\Tag;
 
 class Photo_controller extends Controller
 {
     public function index()
     {
-        return view('Posts.postImage');
+        $categories = Category::all();
+        $tags = Tag::all();
+        return view('Posts.postImage',compact('categories','tags'));
     }
 
     public function store(Request $request)
@@ -19,6 +23,8 @@ class Photo_controller extends Controller
             'title' => 'required',
             'description' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_id' => 'required',
+            'tag_id' => 'required',
         ], [
             'title.required' => 'Vui lòng nhập tiêu đề.',
             'description.required' => 'Vui lòng nhập mô tả.',
@@ -26,27 +32,33 @@ class Photo_controller extends Controller
             'image.image' => 'Tệp phải là một hình ảnh.',
             'image.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg hoặc gif.',
             'image.max' => 'Kích thước hình ảnh tối đa là 2MB.',
+            'category_id.required' => 'Vui lòng chọn một danh mục.',
+            'tag_id.required' => 'Vui lòng chọn ít nhất một thẻ.',
         ]);
-
+    
         // Check if user is authenticated
         if (!auth()->check()) {
             return response()->json(['error' => 'Bạn cần đăng nhập để thực hiện thao tác này.'], 401);
         }
-
+    
         // Create new Photo instance
         $photo = new Photo();
         $photo->user_id = auth()->id();
         $photo->title = $request->title;
         $photo->description = $request->description;
         $photo->status = $request->status ?? 0; // Default status is 0 if not provided
-
+        $photo->category_id = $request->category_id;
+        $photo->tag_id = $request->tag_id;
+    
         // Process and store image
         $imagePath = $request->file('image')->store('images');
         $photo->image_url = $imagePath;
-
+    
         // Save photo to database
         $photo->save();
-
+    
+       
+    
         // Return success response
         return response()->json(['success' => 'Hình ảnh đã được tải lên thành công!']);
     }
@@ -60,6 +72,8 @@ class Photo_controller extends Controller
     {
         // Lấy thông tin của hình ảnh cần chỉnh sửa
         $photo = Photo::findOrFail($id);
+        $categories = Category::all();
+        $tags = Tag::all();
 
         // Kiểm tra xem người dùng có quyền chỉnh sửa không (ví dụ: chỉ cho phép chỉnh sửa hình ảnh của chính họ)
         if ($photo->user_id != auth()->id()) {
@@ -68,7 +82,7 @@ class Photo_controller extends Controller
         }
 
         // Trả về view để hiển thị form chỉnh sửa với dữ liệu của hình ảnh
-        return view('Posts.edit', compact('photo'));
+        return view('Posts.edit', compact('photo','categories','tags'));
     }
     public function update(Request $request, $id)
     {
@@ -98,7 +112,8 @@ class Photo_controller extends Controller
         $photo->title = $request->title;
         $photo->description = $request->description;
         $photo->status = $request->status ?? 0;
-
+        $photo->category_id = $request->category_id;
+        $photo->tag_id = $request->tag_id;
         // Nếu có tệp hình ảnh mới được tải lên, xử lý và lưu hình ảnh
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images');

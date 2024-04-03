@@ -6,7 +6,7 @@
 
       <div class="row">
         <div class="col-lg-12 text-center mb-5">
-          <h1 class="page-title">POST IMAGE</h1>
+          <h1 class="page-title">Đăng bài viết</h1>
         </div>
       </div>
 
@@ -17,20 +17,33 @@
             <div class="form-group col-md-6">
               <input type="text" name="title" class="form-control" placeholder="Nhập tiêu đề">
             </div>
-            <div class="form-group col-md-6" >
+            <div class="form-group col-md-6">
               <select class="form-select" name="status">
                 <option value="0">Không bản quyền</option>
                 <option value="1">Bản quyền</option>
               </select>
             </div>
+            <div class="form-group col-md-6">
+              <select class="form-select" id="category" name="category_id">
+                <option selected disabled>Chọn danh mục</option>
+                @foreach($categories as $category)
+                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <div class="form-group col-md-6">
+            <select class="form-select" id="tag_id" name="tag_id">
+                <option selected disabled>Chọn thẻ tag</option>
+                @foreach($tags as $tag)
+                <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                @endforeach
+              </select>
+            </div>
           </div>
           <div class="form-group">
             <input type="file" id="imageInput" class="form-control" name="image" placeholder="chọn hình ảnh cần chọn">
-
           </div>
-
           <div class="form-group" id="imagePreview">
-
           </div>
           <div>
           </div>
