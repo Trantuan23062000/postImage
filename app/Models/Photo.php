@@ -10,6 +10,8 @@ class Photo extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'category_id',
+        'tag_id',
         'title',
         'description',
         'image_url',
@@ -26,9 +28,14 @@ class Photo extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function tags()
+    public function tag()
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsTo(Tag::class);
+    }
+
+    public function comment()
+    {
+        return $this->hasMany(Comment::class);
     }
 
 }

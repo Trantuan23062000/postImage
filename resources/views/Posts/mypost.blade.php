@@ -16,7 +16,7 @@
       @foreach ($userPhotos as $photo )
       <div class="d-md-flex post-entry-2 half">
         <div class="me-4 thumbnail">
-          <img src="/storage/{{ $photo->image_url }}" alt="{{ $photo->title }}" class="img-fluid custom-image">
+         <a href="{{ route('viewPost', ['id' => $photo->id]) }}"> <img src="/storage/{{ $photo->image_url }}" alt="{{ $photo->title }}" class="img-fluid custom-image"></a>
         </div>
         <div class="ps-md-5 mt-4 mt-md-0">
           <div class="post-meta mt-4">@if ($photo->status == 1)
@@ -29,8 +29,8 @@
           <p>{{$photo->description}}</p>
           <p>Fugit eaque illum blanditiis, quo exercitationem maiores autem laudantium unde excepturi dolores quasi eos vero harum ipsa quam laborum illo aut facere voluptates aliquam adipisci sapiente beatae ullam. Tempora culpa iusto illum accusantium cum hic quisquam dolor placeat officiis eligendi.</p>
           <a href="{{ route('postEdit', ['id' => $photo->id]) }}"><i class="bi bi-pencil-square"></i></a>
-          <a href=""><i class="bi bi-broadcast"></i></a>
-          <a href="#" class="delete-post-btn" data-id="{{ $photo->id }}"><i class="bi bi-trash-fill"></i></a>
+          <a href="{{ route('viewPost', ['id' => $photo->id]) }}"><i class="bi bi-broadcast"></i></a>
+          <a class="delete-post-btn" data-id="{{ $photo->id }}"><i class="bi bi-trash-fill"></i></a>
         </div>
       </div>
       @endforeach

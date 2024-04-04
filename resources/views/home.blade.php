@@ -52,7 +52,7 @@
             <ul>
               <li><a href="">Profie</a></li>
               <li><a href="{{route('myPost')}}">My post</a></li>
-              <li><a href="#" id="logoutBtn">Logout</a></li>
+              <li><a id="logoutBtn">Logout</a></li>
               <!-- <li><a href="#">Drop Down 2</a></li>
               <li><a href="#">Drop Down 3</a></li>
               <li><a href="#">Drop Down 4</a></li> -->
@@ -235,9 +235,41 @@
   <script src="/home/assets/vendor/glightbox/js/glightbox.min.js"></script>
   <script src="/home/assets/vendor/aos/aos.js"></script>
   <script src="/home/assets/vendor/php-email-form/validate.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
   <!-- Template Main JS File -->
   <script src="/home/assets/js/main.js"></script>
+  <script>
+    document.getElementById('logoutBtn').addEventListener('click', function(event) {
+            event.preventDefault(); // Ngăn chặn mặc định hành vi của thẻ a
+
+            // Gửi yêu cầu POST đến route 'logout'
+            fetch('{{ route("logout") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => {
+                    // Đăng xuất thành công, hiển thị thông báo
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Đăng xuất thành công!',
+                        showConfirmButton: true,
+                        allowOutsideClick: false // Ngăn người dùng đóng thông báo bằng cách click ra ngoài
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Nhấn nút "OK", reload trang
+                            window.location.reload();
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Đã xảy ra lỗi:', error);
+                });
+        });
+  </script>
 </body>
 
 </html>

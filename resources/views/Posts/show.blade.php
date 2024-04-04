@@ -1,96 +1,77 @@
 @extends('home')
 @section('content')
 <section class="single-post-content">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="updateCommentModal" tabindex="-1" aria-labelledby="updateCommentModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form id="updateCommentForm">
+            <div class="modal-header">
+              <h5 class="modal-title" id="updateCommentModalLabel">Cập Nhật Bình Luận</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="updateContent" class="form-label">Nội dung bình luận</label>
+                <textarea class="form-control" id="updateContent" name="content" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+              <button type="submit" class="btn btn-primary">Lưu Thay Đổi</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
 
     <div class="row">
       <div class="col-md-9 post-content" data-aos="fade-up">
 
         <!-- ======= Single Post Content ======= -->
         <div class="single-post">
-          <div class="post-meta"><span class="date">Business</span> <span class="mx-1">&bullet;</span> <span>Jul 5th '22</span></div>
+          <div class="post-meta"><span class="date">{{$post->category->name}}</span> <span class="mx-1">&bullet;</span> <span>{{$post->created_at}}</span></div>
           <h1 class="mb-5">{{$post->title}}</h1>
           <figure class="my-4">
             <img src="/storage/{{ $post->image_url }}" alt="" class="img-fluid post-image">
-            <figcaption>@if ($post->status == 1)
-              <span>Hình ảnh có bản quyền</span>
-              @else
-              <span>Hình ảnh không có bản quyền</span>
-              @endif
+            <figcaption>
+              <span style="font-size: 18px;">{{$post->description}}</span>
             </figcaption>
           </figure>
-          <p>{{$post->description}}</p>
         </div><!-- End Single Post Content -->
 
         <!-- ======= Comments ======= -->
         <div class="comments">
-          <h5 class="comment-title py-4">2 Comments</h5>
           <div class="comment d-flex mb-4">
-            <div class="flex-shrink-0">
-              <div class="avatar avatar-sm rounded-circle">
-                <img class="avatar-img" src="/home/assets/img/person-5.jpg" alt="" class="img-fluid">
-              </div>
-            </div>
             <div class="flex-grow-1 ms-2 ms-sm-3">
-              <div class="comment-meta d-flex align-items-baseline">
-                <h6 class="me-2">Jordan Singer</h6>
-                <span class="text-muted">2d</span>
-              </div>
-              <div class="comment-body">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Non minima ipsum at amet doloremque qui magni, placeat deserunt pariatur itaque laudantium impedit aliquam eligendi repellendus excepturi quibusdam nobis esse accusantium.
-              </div>
-
               <div class="comment-replies bg-light p-3 mt-3 rounded">
-                <h6 class="comment-replies-title mb-4 text-muted text-uppercase">2 replies</h6>
-
+                <h6 class="comment-replies-title mb-4 text-muted text-uppercase">{{$commentCount}} Bình luận</h6>
+                @foreach($comments as $comment)
                 <div class="reply d-flex mb-4">
                   <div class="flex-shrink-0">
                     <div class="avatar avatar-sm rounded-circle">
-                      <img class="avatar-img" src="/home/assets/img/person-4.jpg" alt="" class="img-fluid">
+                      <img class="avatar-img" src="/home/assets/img/favicon.png" alt="" class="img-fluid">
                     </div>
                   </div>
+
                   <div class="flex-grow-1 ms-2 ms-sm-3">
                     <div class="reply-meta d-flex align-items-baseline">
-                      <h6 class="mb-0 me-2">Brandon Smith</h6>
-                      <span class="text-muted">2d</span>
+                      <h6 class="mb-0 me-2">{{ $comment->user->username }}</h6>
+                      <span class="text-muted">{{$comment->created_at}}</span>
                     </div>
                     <div class="reply-body">
-                      Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                      {{ $comment->content }}
+                      @if($comment->user_id == auth()->id())
+                      <a href="javascript:void(0)" class="edit-comment" data-id="{{ $comment->id }}" data-content="{{ $comment->content }}"><i class="bi bi-pencil"></i></a>
+                      <a href="javascript:void(0)" class="delete-comment" data-id="{{ $comment->id }}"><i class="bi bi-trash"></i></a>
+                      @endif
                     </div>
                   </div>
                 </div>
-                <div class="reply d-flex">
-                  <div class="flex-shrink-0">
-                    <div class="avatar avatar-sm rounded-circle">
-                      <img class="avatar-img" src="/home/assets/img/person-3.jpg" alt="" class="img-fluid">
-                    </div>
-                  </div>
-                  <div class="flex-grow-1 ms-2 ms-sm-3">
-                    <div class="reply-meta d-flex align-items-baseline">
-                      <h6 class="mb-0 me-2">James Parsons</h6>
-                      <span class="text-muted">1d</span>
-                    </div>
-                    <div class="reply-body">
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Distinctio dolore sed eos sapiente, praesentium.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="comment d-flex">
-            <div class="flex-shrink-0">
-              <div class="avatar avatar-sm rounded-circle">
-                <img class="avatar-img" src="/home/assets/img/person-2.jpg" alt="" class="img-fluid">
-              </div>
-            </div>
-            <div class="flex-shrink-1 ms-2 ms-sm-3">
-              <div class="comment-meta d-flex">
-                <h6 class="me-2">Santiago Roberts</h6>
-                <span class="text-muted">4d</span>
-              </div>
-              <div class="comment-body">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto laborum in corrupti dolorum, quas delectus nobis porro accusantium molestias sequi.
+                @endforeach
               </div>
             </div>
           </div>
@@ -100,23 +81,15 @@
         <div class="row justify-content-center mt-5">
 
           <div class="col-lg-12">
-            <h5 class="comment-title">Leave a Comment</h5>
+            <h5 class="comment-title">Bình luận ảnh</h5>
             <div class="row">
-              <div class="col-lg-6 mb-3">
-                <label for="comment-name">Name</label>
-                <input type="text" class="form-control" id="comment-name" placeholder="Enter your name">
-              </div>
-              <div class="col-lg-6 mb-3">
-                <label for="comment-email">Email</label>
-                <input type="text" class="form-control" id="comment-email" placeholder="Enter your email">
-              </div>
               <div class="col-12 mb-3">
-                <label for="comment-message">Message</label>
-
-                <textarea class="form-control" id="comment-message" placeholder="Enter your name" cols="30" rows="10"></textarea>
+                <textarea id="commentContent" class="form-control" name="content" cols="30" rows="10"></textarea>
+                <input type="hidden" id="isLoggedIn" value="{{ auth()->check() ? 'true' : 'false' }}">
+                <input type="hidden" id="photoId" value="{{ $post->id }}">
               </div>
               <div class="col-12">
-                <input type="submit" class="btn btn-primary" value="Post comment">
+                <button id="submitComment" type="submit" class="btn btn-primary text-uppercase">Bình luận</button>
               </div>
             </div>
           </div>
@@ -174,28 +147,15 @@
         <div class="aside-block">
           <h3 class="aside-title">Categories</h3>
           <ul class="aside-links list-unstyled">
-            <li><a href="category.html"><i class="bi bi-chevron-right"></i> Business</a></li>
-            <li><a href="category.html"><i class="bi bi-chevron-right"></i> Culture</a></li>
-            <li><a href="category.html"><i class="bi bi-chevron-right"></i> Sport</a></li>
-            <li><a href="category.html"><i class="bi bi-chevron-right"></i> Food</a></li>
-            <li><a href="category.html"><i class="bi bi-chevron-right"></i> Politics</a></li>
-            <li><a href="category.html"><i class="bi bi-chevron-right"></i> Celebrity</a></li>
-            <li><a href="category.html"><i class="bi bi-chevron-right"></i> Startups</a></li>
-            <li><a href="category.html"><i class="bi bi-chevron-right"></i> Travel</a></li>
+            <li><i class="bi bi-chevron-right"></i> {{$post->category->name}}</li>
+
           </ul>
         </div><!-- End Categories -->
 
         <div class="aside-block">
           <h3 class="aside-title">Tags</h3>
           <ul class="aside-tags list-unstyled">
-            <li><a href="category.html">Business</a></li>
-            <li><a href="category.html">Culture</a></li>
-            <li><a href="category.html">Sport</a></li>
-            <li><a href="category.html">Food</a></li>
-            <li><a href="category.html">Politics</a></li>
-            <li><a href="category.html">Celebrity</a></li>
-            <li><a href="category.html">Startups</a></li>
-            <li><a href="category.html">Travel</a></li>
+            <li><a>{{$post->tag->name}}</a></li>
           </ul>
         </div><!-- End Tags -->
 
@@ -205,9 +165,184 @@
 </section>
 <style>
   .post-image {
-    max-width: 100%;
+    max-width: 200%;
     max-height: 600px;
     /* Thay đổi giá trị này tùy thuộc vào kích thước bạn muốn giới hạn */
   }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  $(document).ready(function() {
+    // Lắng nghe sự kiện click trên nút "Bình luận"
+    $('#submitComment').click(function() {
+      // Kiểm tra đăng nhập
+      if (!checkLoggedIn()) {
+        // Nếu chưa đăng nhập, hiển thị thông báo yêu cầu đăng nhập
+        showLoginAlert();
+        return;
+      }
+      // Lấy dữ liệu bình luận và mã token CSRF
+      var content = $('#commentContent').val();
+      var photoId = $('#photoId').val();
+      var userId = $('#userId').val();
+      var csrfToken = $('meta[name="csrf-token"]').attr('content'); // Lấy mã token CSRF từ thẻ meta
+
+      // Gửi dữ liệu bình luận đến server bằng AJAX
+      $.ajax({
+        type: 'POST',
+        url: '/comment/store',
+        headers: {
+          'X-CSRF-TOKEN': csrfToken // Bao gồm mã token CSRF trong header của yêu cầu
+        },
+        data: {
+          photo_id: photoId,
+          user_id: userId,
+          content: content
+        },
+        success: function(response) {
+          // Hiển thị thông báo thành công
+          Swal.fire({
+            icon: 'success',
+            text: response.success,
+          }).then((result) => {
+            // Sau khi người dùng nhấn OK, reload trang
+            if (result.isConfirmed) {
+              location.reload(); // Reload trang
+            }
+          });;
+          // Xóa nội dung của textarea sau khi gửi thành công
+          $('#commentContent').val('');
+        },
+        error: function(xhr, status, error) {
+          // Nếu có lỗi, trích xuất thông báo lỗi từ phản hồi và hiển thị nó
+          var err = JSON.parse(xhr.responseText);
+          var errMsg = err.errors.content[0];
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: errMsg
+          });
+        }
+      });
+    });
+  });
+
+  // Hàm kiểm tra đăng nhập
+  function checkLoggedIn() {
+    // Lấy giá trị đăng nhập từ trường ẩn
+    var isLoggedIn = $('#isLoggedIn').val() === 'true';
+    return isLoggedIn;
+  }
+
+  // Hàm hiển thị thông báo yêu cầu đăng nhập
+  function showLoginAlert() {
+    sessionStorage.setItem('returnUrl', window.location.href);
+    Swal.fire({
+      icon: 'info',
+      title: 'Vui lòng đăng nhập',
+      text: 'Bạn cần đăng nhập để gửi comment.',
+      showCancelButton: true,
+      confirmButtonText: 'Đăng nhập',
+      cancelButtonText: 'Hủy',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Chuyển hướng người dùng đến trang đăng nhập
+        window.location.href = '/login';
+      }
+    });
+
+  }
+
+  $(document).ready(function() {
+    // Mở modal và điền nội dung bình luận cần cập nhật
+    $(document).on('click', '.edit-comment', function() {
+      var commentId = $(this).data('id');
+      var commentContent = $(this).data('content');
+      $('#updateContent').val(commentContent);
+      $('#updateCommentModal').modal('show');
+
+      // Submit form cập nhật bình luận
+      $('#updateCommentForm').submit(function(e) {
+        e.preventDefault();
+        var updatedContent = $('#updateContent').val();
+        $.ajax({
+          type: 'PUT',
+          url: '/comment/update/' + commentId,
+          beforeSend: function(xhr) {
+            xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+          },
+          data: {
+            content: updatedContent
+          },
+          success: function(response) {
+            // Hiển thị thông báo thành công
+            Swal.fire({
+              icon: 'success',
+              text: response.success,
+            }).then((result) => {
+              // Sau khi người dùng nhấn OK, reload trang
+              if (result.isConfirmed) {
+                location.reload();
+              }
+            });
+          },
+          error: function(xhr, status, error) {
+            // Hiển thị thông báo lỗi
+            Swal.fire({
+              icon: 'error',
+              title: 'Lỗi',
+              text: 'Có lỗi xảy ra. Vui lòng thử lại sau.',
+            });
+          }
+        });
+      });
+    });
+  });
+
+  $(document).ready(function() {
+    // Xóa bình luận
+    $(document).on('click', '.delete-comment', function() {
+      var commentId = $(this).data('id');
+      Swal.fire({
+        title: 'Bạn có chắc muốn xóa bình luận này?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $.ajax({
+            type: 'DELETE',
+            url: '/comment/delete/' + commentId,
+            beforeSend: function(xhr) {
+              xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+            },
+            success: function(response) {
+              // Xử lý khi xóa thành công
+              Swal.fire({
+                icon: 'success',
+                text: response.success,
+              }).then((result) => {
+                // Sau khi người dùng nhấn OK, reload trang
+                if (result.isConfirmed) {
+                  location.reload();
+                }
+              });
+            },
+            error: function(xhr, status, error) {
+              // Xử lý khi có lỗi
+              Swal.fire({
+                icon: 'error',
+                title: 'Lỗi',
+                text: 'Có lỗi xảy ra. Vui lòng thử lại sau.',
+              });
+            }
+          });
+        }
+      });
+    });
+  });
+</script>
+
 @endsection

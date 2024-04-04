@@ -88,7 +88,8 @@
               title: 'Thành công!',
               text: response.success
             }).then(function() {
-              window.location.href = '/allPost'; // Chuyển hướng sau khi đóng thông báo
+              var previousPage = document.referrer; // Lấy đường dẫn của trang trước đó
+              window.location.href = previousPage; // Chuyển hướng về trang trước đó sau khi đóng thông báo
             });
           },
           error: function(xhr, status, error) {

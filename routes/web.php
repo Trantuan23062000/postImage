@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin_controller;
+use App\Http\Controllers\Comment_controller;
 use App\Http\Controllers\Home_controller;
 use App\Http\Controllers\Photo_controller;
 use App\Http\Controllers\Post_controller;
@@ -16,15 +17,14 @@ Route::get('/login',[Home_controller::class,'login'])->name('login');
 Route::post('/postLogin',[Home_controller::class,'postLogin'])->name('postLogin');
 Route::post('/logout', [Home_controller::class,'logout'])->name('logout');
 Route::get('/forgot',[Home_controller::class,'forgot'])->name('forgot');
-Route::post('/sendLink',[Home_controller::class,'sendResetLinkEmail'])->name('send');
-Route::get('/reset/{token}',[Home_controller::class,'showResetForm'])->name('showreset');
-Route::post('/reset-password',[Home_controller::class,'reset'])->name('formReset');
-Route::get('/my-post',[Post_controller::class,'index'])->name('myPost');
 Route::get('/post',[Photo_controller::class,'index'])->name('post');
 Route::post('/postImage',[Photo_controller::class,'store'])->name('postImage');
-Route::get('/search', [Photo_controller::class, 'search'])->name('search');
 Route::get('/allPost', [Home_controller::class,'index'])->name('allPost');
 Route::get('/viewPost/{id}', [Post_controller::class,'show'])->name('viewPost');
+Route::post('/comment/store', [Comment_controller::class,'store']);
+Route::put('/comment/update/{id}', [Comment_controller::class,'update']);
+Route::delete('/comment/delete/{id}',[Comment_controller::class,'delete']);
+Route::get('/my-post',[Post_controller::class,'index'])->name('myPost');
 
 
 
@@ -32,8 +32,9 @@ Route::middleware(['auth'])->group(function(){
 Route::get('/EditPost/{id}', [Photo_controller::class, 'edit']) ->name('postEdit');
 Route::put('/updatePost/{id}',[Photo_controller::class,'update'])->name('updatePost');
 Route::delete('/deletePost/{id}', [Photo_controller::class, 'destroy'])->name('deletePost');
-
 });
+
+
 
 
 
@@ -50,7 +51,6 @@ Route::get('/storage/{path}', function ($path) {
 })->where('path', '.*');
 
 
-
 Route::get('/check-login', function () {
     if (auth()->check()) {
         return response()->json(['status' => 'logged_in']);
@@ -58,9 +58,6 @@ Route::get('/check-login', function () {
         return response()->json(['status' => 'logged_out']);
     }
 });
-
-
-
 
 
 Route::get('/admin',[Admin_controller::class,'index'])->name('admin');

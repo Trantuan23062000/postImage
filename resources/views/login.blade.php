@@ -51,7 +51,7 @@
                                 <div class="card-body">
 
                                     <div class="pt-4 pb-2">
-                                        <h5 class="card-title text-center pb-0 fs-4">{{ __('Register Account') }}</h5>
+                                        <h5 class="card-title text-center pb-0 fs-4">{{ __('Login') }}</h5>
                                     </div>
 
                                     <form id="loginForm" class="row g-3" method="POST" action="{{route('postLogin')}}" novalidate>
@@ -133,7 +133,7 @@
                     });
                     $(window).on('click', function() {
                     window.location.href = "{{ route('allPost') }}";
-                });
+                    });
                 },
                 error: function(xhr, status, error) {
                     var errors = xhr.responseJSON.errors;
@@ -144,6 +144,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Oops...',
+                        text: 'Mật khẩu và email không đúng !',
                         html: errorMessage,
                     });
                 }

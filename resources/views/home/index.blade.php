@@ -7,7 +7,7 @@
                 <h3 class="category-title">Category: Business</h3>
                 @foreach ($photos as $photo)
                 <div class="d-md-flex post-entry-2 half">
-                    <a href="single-post.html" class="me-4 thumbnail">
+                    <a href="{{ route('viewPost', ['id' => $photo->id]) }}" class="me-4 thumbnail">
                         <img src="{{ asset('/storage/' . $photo->image_url) }}" alt="" class="img-fluid @if($photo->status == 1) copyrighted @endif">
                     </a>
                     <div>
@@ -20,15 +20,20 @@
                                 <h3 class="m-0 p-0">{{$photo->user->username}}</h3>
                             </div>
                         </div>
+                        <ul class="aside-tags list-unstyled">
+                            <li><a>Category:{{$photo->category->name}}</a></li>
+                            <li><a>Tag:{{$photo->tag->name}}</a></li>
+                        </ul>
+                        </ul>
                         <div class="post-meta mt-4">
                             <div>
                                 <a href="{{ route('viewPost', ['id' => $photo->id]) }}" class="button"><span>Xem bài viết
 
-                                </span>@if ($photo->status == 1)
-                            <span><i class="bi bi-eye-slash-fill"></i></span>
-                            @else
-                            <span><i class="bi bi-eye-fill"></i></span>
-                            @endif</a>
+                                    </span>@if ($photo->status == 1)
+                                    <span><i class="bi bi-eye-slash-fill"></i></span>
+                                    @else
+                                    <span><i class="bi bi-eye-fill"></i></span>
+                                    @endif</a>
                             </div>
                         </div>
                         @auth <!-- Kiểm tra người dùng đã đăng nhập hay chưa -->
@@ -38,9 +43,15 @@
                         @endif
                         @endauth
                     </div>
+
+
+
                 </div>
                 @endforeach
-                        {{ $photos->links() }}
+                <div class="d-flex justify-content-center">
+               {{ $photos->links() }}
+               </div>
+               
             </div>
 
             <div class="col-md-3">
@@ -93,28 +104,20 @@
                 <div class="aside-block">
                     <h3 class="aside-title">Categories</h3>
                     <ul class="aside-links list-unstyled">
-                        <li><a href="category.html"><i class="bi bi-chevron-right"></i> Business</a></li>
-                        <li><a href="category.html"><i class="bi bi-chevron-right"></i> Culture</a></li>
-                        <li><a href="category.html"><i class="bi bi-chevron-right"></i> Sport</a></li>
-                        <li><a href="category.html"><i class="bi bi-chevron-right"></i> Food</a></li>
-                        <li><a href="category.html"><i class="bi bi-chevron-right"></i> Politics</a></li>
-                        <li><a href="category.html"><i class="bi bi-chevron-right"></i> Celebrity</a></li>
-                        <li><a href="category.html"><i class="bi bi-chevron-right"></i> Startups</a></li>
-                        <li><a href="category.html"><i class="bi bi-chevron-right"></i> Travel</a></li>
+                        @foreach ( $photos as $item )
+                        <li><a><i class="bi bi-chevron-right"></i> {{$item->category->name}}</a></li>
+
+                        @endforeach
+
                     </ul>
                 </div><!-- End Categories -->
 
                 <div class="aside-block">
                     <h3 class="aside-title">Tags</h3>
                     <ul class="aside-tags list-unstyled">
-                        <li><a href="category.html">Business</a></li>
-                        <li><a href="category.html">Culture</a></li>
-                        <li><a href="category.html">Sport</a></li>
-                        <li><a href="category.html">Food</a></li>
-                        <li><a href="category.html">Politics</a></li>
-                        <li><a href="category.html">Celebrity</a></li>
-                        <li><a href="category.html">Startups</a></li>
-                        <li><a href="category.html">Travel</a></li>
+                        @foreach ( $photos as $item )
+                        <li><a><i class="bi bi-chevron-right"></i> {{$item->tag->name}}</a></li>
+                        @endforeach
                     </ul>
                 </div><!-- End Tags -->
 
@@ -123,16 +126,15 @@
         </div>
     </div>
     <style>
-    .copyrighted {
-        filter: blur(5px);
-        /* Áp dụng hiệu ứng làm mờ */
-        -webkit-filter: blur(5px);
-        /* Áp dụng hiệu ứng làm mờ cho trình duyệt webkit-based */
-        opacity: 0.7;
-        /* Giảm độ sáng */
-    }
-
-</style>
+        .copyrighted {
+            filter: blur(5px);
+            /* Áp dụng hiệu ứng làm mờ */
+            -webkit-filter: blur(10px);
+            /* Áp dụng hiệu ứng làm mờ cho trình duyệt webkit-based */
+            opacity: 0.7;
+            /* Giảm độ sáng */
+        }
+    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
