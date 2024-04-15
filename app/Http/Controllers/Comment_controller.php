@@ -67,7 +67,16 @@ class Comment_controller extends Controller
     public function delete($id)
     {
         $comment = Comment::findOrFail($id);
-        $comment->delete();
-        return response()->json(['success' => 'Bình luận đã được xóa thành công.']);
+    
+        // Kiểm tra xem người đăng nhập có phải là người tạo ra bình luận hoặc là admin không
+        if (auth()->user()->id == $comment->user_id || auth()->user()->role == 'admin') {
+            // Nếu là người đăng bài hoặc là admin, cho phép xoá bình luận
+            $comment->delete();
+            return response()->json(['success' => 'Bình luận đã được xóa thành công.']);
+        } else {
+            // Nếu không phải là người đăng bài hoặc admin, trả về lỗi
+            return response()->json(['error' => 'Bạn không có quyền thực hiện thao tác này.'], 403);
+        }
     }
+    
 }

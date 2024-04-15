@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin_controller;
+use App\Http\Controllers\Auth_Controller;
 use App\Http\Controllers\Comment_controller;
 use App\Http\Controllers\Home_controller;
 use App\Http\Controllers\Photo_controller;
 use App\Http\Controllers\Post_controller;
 use App\Http\Controllers\Tag_controller;
 use App\Http\Controllers\Category_Controller;
+use App\Http\Controllers\User_controller;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Response;
@@ -27,6 +29,19 @@ Route::post('/comment/store', [Comment_controller::class, 'store']);
 Route::put('/comment/update/{id}', [Comment_controller::class, 'update']);
 Route::delete('/comment/delete/{id}', [Comment_controller::class, 'delete']);
 Route::get('/my-post', [Post_controller::class, 'index'])->name('myPost');
+Route::post('/search', [Home_controller::class, 'search'])->name('search');
+Route::get('/download/{id}', [Home_controller::class, 'downloadPhoto'])->name('photo.download');
+Route::get('/filter/posts', [Home_controller::class, 'filter'])->name('filter.posts');
+
+Route::get('/photos/{id}/views', [Post_controller::class, 'views'])->name('photo.views');
+
+// Route cho trang chia sẻ bài viết
+Route::post('/photos/{id}/share', [Photo_Controller::class, 'share'])->name('sharePost');
+
+
+Route::delete('/admin/deletePost/{id}', [Admin_controller::class, 'destroy'])->name('admin.deletePost');
+Route::get('/admin/user', [User_controller::class, 'index'])->name('admin.user');
+
 
 
 
@@ -53,31 +68,38 @@ Route::get('/storage/{path}', function ($path) {
 })->where('path', '.*');
 
 
-Route::get('/check-login', function () {
-    if (auth()->check()) {
-        return response()->json(['status' => 'logged_in']);
-    } else {
-        return response()->json(['status' => 'logged_out']);
-    }
-});
-
 
 Route::get('/admin', [Admin_controller::class, 'index'])->name('admin');
-Route::get('/admin/post',[Admin_controller::class,'allPost'])->name('admin.post');
+Route::get('/admin/post', [Admin_controller::class, 'allPost'])->name('admin.post');
+Route::get('/admin/post/{id}', [Admin_controller::class, 'show'])->name('admin.show');
+
+Route::get('/admin/login', [Admin_controller::class, 'login'])->name('admin.login');
+Route::post('/admin/postLogin', [Admin_controller::class, 'postLogin'])->name('admin.postLogin');
+Route::post('/admin/active', [Admin_controller::class, 'active'])->name('admin.active');
 
 
 
 Route::get('/admin/tags', [Tag_controller::class, 'index'])->name('admin.tag');
 Route::post('/admin/addTag', [Tag_Controller::class, 'store']);
 Route::get('/admin/tags/{id}/edit', [Tag_Controller::class, 'edit'])->name('admin.tags.edit');
-Route::put('/admin/tags/{id}',[Tag_controller::class,'update']);
+Route::put('/admin/tags/{id}', [Tag_controller::class, 'update']);
 Route::delete('/admin/tags/{id}', [Tag_Controller::class, 'destroy']);
 
 
 Route::get('/admin/category', [Category_Controller::class, 'index'])->name('admin.category');
 Route::post('/admin/addCategory', [Category_Controller::class, 'store']);
 Route::get('/admin/category/{id}/edit', [Category_Controller::class, 'edit'])->name('admin.category.edit');
-Route::put('/admin/category/{id}',[Category_Controller::class,'update']);
+Route::put('/admin/category/{id}', [Category_Controller::class, 'update']);
 Route::delete('/admin/category/{id}', [Category_Controller::class, 'destroy']);
 
+
+Route::get('/forgot-password', [Auth_Controller::class, 'showForgotPasswordForm'])->name('forgot-password');
+Route::post('/send-reset-link-email', [Auth_Controller::class, 'sendResetLinkEmail'])->name('send.reset.link.email');
+route::get('/reset-password/{email}/{token}', [Auth_Controller::class, 'formForgot'])->name('reset-password');
+Route::post('/reset-password', [Auth_Controller::class, 'reset'])->name('password.update');
+
+Route::get('/admin/forgot-password', [User_Controller::class, 'showForgotPasswordForm'])->name('admin.forgot-password');
+Route::post('/admin/send-reset-link-email', [User_Controller::class, 'sendResetLinkEmail'])->name('admin.send.reset.link.email');
+route::get('/admin/reset-password/{email}/{token}', [User_Controller::class, 'formForgot'])->name('admin.reset-password');
+Route::post('/admin/reset-password', [User_Controller::class, 'reset'])->name('admin.password.update');
 

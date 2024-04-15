@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Photo;
+use App\Models\Share;
+use App\Models\User;
 use Illuminate\Validation\ValidationException;
 
 use Illuminate\Http\Request;
@@ -11,8 +14,20 @@ class Category_controller extends Controller
 {
     public function index()
     {
+        $totalCount = Photo::count();
+        $totalDownloads = Photo::sum('downloads_count');
+        $view = Photo::sum('views');
+        $share = Share::count();
+        $user = User::count();
         $category = Category::latest()->get(); // Sắp xếp từ mới nhất đến cũ nhất
-        return view('admin.category.index', compact('category'));
+        return view('admin.category.index',  [
+            'totalCount' => $totalCount,
+            'totalDownloads' => $totalDownloads,
+            'view' => $view,
+            'share'=>$share,
+            'user'=>$user,
+            'category'=>$category
+        ]);
     }
 
     public function store(Request $request)

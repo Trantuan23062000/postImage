@@ -5,20 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class Download extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id', 'name'
+        'photo_id',
     ];
 
+    // Mối quan hệ giữa model Download và model Photo
     public function photo()
     {
-        return $this->hasMany(Photo::class);
+        return $this->belongsTo(Photo::class);
     }
-
-    public function scopeSearch($query, $keyword)
-{
-    return $query->where('name', 'like', "%$keyword%");
-}
 }

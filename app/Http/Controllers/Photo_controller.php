@@ -6,6 +6,9 @@ use App\Models\Photo;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Tag;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\SharePost;
+use App\Models\Share;
 
 class Photo_controller extends Controller
 {
@@ -13,7 +16,7 @@ class Photo_controller extends Controller
     {
         $categories = Category::all();
         $tags = Tag::all();
-        return view('Posts.postImage',compact('categories','tags'));
+        return view('home.Posts.postImage', compact('categories', 'tags'));
     }
 
     public function store(Request $request)
@@ -35,30 +38,30 @@ class Photo_controller extends Controller
             'category_id.required' => 'Vui lòng chọn một danh mục.',
             'tag_id.required' => 'Vui lòng chọn ít nhất một thẻ.',
         ]);
-    
+
         // Check if user is authenticated
         if (!auth()->check()) {
             return response()->json(['error' => 'Bạn cần đăng nhập để thực hiện thao tác này.'], 401);
         }
-    
+
         // Create new Photo instance
         $photo = new Photo();
         $photo->user_id = auth()->id();
         $photo->title = $request->title;
         $photo->description = $request->description;
-        $photo->status = $request->status ?? 0; // Default status is 0 if not provided
+        $photo->status = $request->status ?? 0;
         $photo->category_id = $request->category_id;
         $photo->tag_id = $request->tag_id;
-    
+
         // Process and store image
         $imagePath = $request->file('image')->store('images');
         $photo->image_url = $imagePath;
-    
+
         // Save photo to database
         $photo->save();
-    
-       
-    
+
+
+
         // Return success response
         return response()->json(['success' => 'Hình ảnh đã được tải lên thành công!']);
     }
@@ -82,7 +85,7 @@ class Photo_controller extends Controller
         }
 
         // Trả về view để hiển thị form chỉnh sửa với dữ liệu của hình ảnh
-        return view('Posts.edit', compact('photo','categories','tags'));
+        return view('home.Posts.edit', compact('photo', 'categories', 'tags'));
     }
     public function update(Request $request, $id)
     {
@@ -112,6 +115,7 @@ class Photo_controller extends Controller
         $photo->title = $request->title;
         $photo->description = $request->description;
         $photo->status = $request->status ?? 0;
+        $photo->active = $request->active ?? 0;
         $photo->category_id = $request->category_id;
         $photo->tag_id = $request->tag_id;
         // Nếu có tệp hình ảnh mới được tải lên, xử lý và lưu hình ảnh
@@ -132,7 +136,7 @@ class Photo_controller extends Controller
         $photo = Photo::findOrFail($id);
 
         // Kiểm tra xem người dùng có quyền xóa bài viết không
-        if ($photo->user_id != auth()->id()) {
+        if ($photo->user_id != auth()->id() && auth()->user()->role != 'admin') {
             return response()->json(['error' => 'Bạn không có quyền xóa bài viết này.'], 401);
         }
 
@@ -142,4 +146,40 @@ class Photo_controller extends Controller
         // Trả về phản hồi thành công
         return response()->json(['success' => 'Bài viết đã được xóa thành công!']);
     }
+
+    public function share(Request $request, $id)
+    {
+        // Tìm bài viết theo ID
+        $photo = Photo::find($id);
+
+        // Kiểm tra xem bài viết có tồn tại không
+        if (!$photo) {
+            return response()->json(['error' => 'Không tìm thấy bài viết có id ' . $id . '.'], 404);
+        }
+
+        // Kiểm tra xem người dùng đã nhập email chia sẻ chưa
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        try {
+            // Gửi email chia sẻ
+            Mail::to($request->email)->send(new SharePost($photo));
+
+            // Lưu thông tin chia sẻ vào bảng shares
+            Share::create([
+                'photo_id' => $photo->id,
+                'user_id' => auth()->id(), // Assuming you have authentication and each share is associated with a user
+                'shared_to' => $request->email,
+            ]);
+
+            // Trả về phản hồi thành công
+            return response()->json(['success' => 'Bài viết đã được chia sẻ thành công qua email.']);
+        } catch (\Exception $e) {
+            dd($e);
+            // Trả về phản hồi lỗi nếu có lỗi xảy ra trong quá trình gửi email
+            return response()->json(['error' => 'Đã xảy ra lỗi khi chia sẻ bài viết.'], 500);
+        }
+    }
+
 }

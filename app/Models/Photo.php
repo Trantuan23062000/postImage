@@ -15,7 +15,7 @@ class Photo extends Model
         'title',
         'description',
         'image_url',
-        'status', 
+        'status',
     ];
 
     public function user()
@@ -38,4 +38,8 @@ class Photo extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function scopeSearch($query, $keyword)
+    {
+        return $query->where('title', 'like', "%$keyword%");
+    }
 }

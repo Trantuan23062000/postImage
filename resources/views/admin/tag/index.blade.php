@@ -59,6 +59,10 @@
         </div>
     </div>
 </div>
+<ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ route('admin') }}">Admin</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Thẻ tag </li>
+    </ol>
 
 <table class="table table-bordered">
     <thead>

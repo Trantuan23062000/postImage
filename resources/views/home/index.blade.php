@@ -1,129 +1,128 @@
-@extends('home')
+@extends('home.home')
 @section('content')
+
 <section>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-9" data-aos="fade-up">
-                <h3 class="category-title">Category: Business</h3>
-                @foreach ($photos as $photo)
-                <div class="d-md-flex post-entry-2 half">
-                    <a href="{{ route('viewPost', ['id' => $photo->id]) }}" class="me-4 thumbnail">
-                        <img src="{{ asset('/storage/' . $photo->image_url) }}" alt="" class="img-fluid @if($photo->status == 1) copyrighted @endif">
-                    </a>
-                    <div>
-                        <div class="post-meta"><span class="date">Culture</span> <span class="mx-1">&bullet;</span> <span>{{$photo->created_at}}</span></div>
-                        <h3>{{$photo->title}}</h3>
-                        <p>{{$photo->description}}</p>
-                        <div class="d-flex align-items-center author">
-                            <div class="photo"><img src="/home/assets/img/favicon.png" alt="" class="img-fluid"></div>
-                            <div class="name">
-                                <h3 class="m-0 p-0">{{$photo->user->username}}</h3>
-                            </div>
-                        </div>
-                        <ul class="aside-tags list-unstyled">
-                            <li><a>Category:{{$photo->category->name}}</a></li>
-                            <li><a>Tag:{{$photo->tag->name}}</a></li>
-                        </ul>
-                        </ul>
-                        <div class="post-meta mt-4">
-                            <div>
-                                <a href="{{ route('viewPost', ['id' => $photo->id]) }}" class="button"><span>Xem bài viết
-
-                                    </span>@if ($photo->status == 1)
-                                    <span><i class="bi bi-eye-slash-fill"></i></span>
-                                    @else
-                                    <span><i class="bi bi-eye-fill"></i></span>
-                                    @endif</a>
-                            </div>
-                        </div>
-                        @auth <!-- Kiểm tra người dùng đã đăng nhập hay chưa -->
-                        @if(auth()->user()->id == $photo->user_id) <!-- Kiểm tra xem người đăng nhập có phải là tác giả của bài viết không -->
-                        <a href="{{ route('postEdit', ['id' => $photo->id]) }}"><i class="bi bi-pencil-square"></i></a>
-                        <a class="delete-post-btn" data-id="{{ $photo->id }}"><i class="bi bi-trash-fill"></i></a>
-                        @endif
-                        @endauth
-                    </div>
-
-
-
+    <!-- Modal -->
+    <div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="shareModalLabel">Chia sẻ bài viết</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                @endforeach
-                <div class="d-flex justify-content-center">
-               {{ $photos->links() }}
-               </div>
-               
+                <div class="modal-body">
+                    <form id="shareForm">
+                        <div class="mb-3">
+                            <input type="hidden" id="photoId" name="photoId">
+                            <label for="emailInput" class="form-label">Địa chỉ Email</label>
+                            <input type="email" class="form-control" id="emailInput" placeholder="Nhập địa chỉ email của bạn" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Chia sẻ</button>
+                    </form>
+                </div>
             </div>
-
-            <div class="col-md-3">
-                <!-- ======= Sidebar ======= -->
-                <div class="aside-block">
-
-                    <ul class="nav nav-pills custom-tab-nav mb-4" id="pills-tab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="pills-popular-tab" data-bs-toggle="pill" data-bs-target="#pills-popular" type="button" role="tab" aria-controls="pills-popular" aria-selected="true">Popular</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-trending-tab" data-bs-toggle="pill" data-bs-target="#pills-trending" type="button" role="tab" aria-controls="pills-trending" aria-selected="false">Trending</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="pills-latest-tab" data-bs-toggle="pill" data-bs-target="#pills-latest" type="button" role="tab" aria-controls="pills-latest" aria-selected="false">Latest</button>
-                        </li>
-                    </ul>
-
-                    <div class="tab-content" id="pills-tabContent">
-
-                        <!-- Popular -->
-                        <div class="tab-pane fade show active" id="pills-popular" role="tabpanel" aria-labelledby="pills-popular-tab">
-                            <div class="post-entry-1 border-bottom">
-                                <div class="post-meta"><span class="date">Sport</span> <span class="mx-1">&bullet;</span> <span>Jul 5th '22</span></div>
-                                <h2 class="mb-2"><a href="#">How to Avoid Distraction and Stay Focused During Video Calls?</a></h2>
-                                <span class="author mb-3 d-block">Jenny Wilson</span>
-                            </div>
-                        </div> <!-- End Popular -->
-
-                        <!-- Trending -->
-                        <div class="tab-pane fade" id="pills-trending" role="tabpanel" aria-labelledby="pills-trending-tab">
-                            <div class="post-entry-1 border-bottom">
-                                <div class="post-meta"><span class="date">Lifestyle</span> <span class="mx-1">&bullet;</span> <span>Jul 5th '22</span></div>
-                                <h2 class="mb-2"><a href="#">17 Pictures of Medium Length Hair in Layers That Will Inspire Your New Haircut</a></h2>
-                                <span class="author mb-3 d-block">Jenny Wilson</span>
-                            </div>
-                        </div> <!-- End Trending -->
-
-                        <!-- Latest -->
-                        <div class="tab-pane fade" id="pills-latest" role="tabpanel" aria-labelledby="pills-latest-tab">
-                            <div class="post-entry-1 border-bottom">
-                                <div class="post-meta"><span class="date">Lifestyle</span> <span class="mx-1">&bullet;</span> <span>Jul 5th '22</span></div>
-                                <h2 class="mb-2"><a href="#">Life Insurance And Pregnancy: A Working Mom’s Guide</a></h2>
-                                <span class="author mb-3 d-block">Jenny Wilson</span>
-                            </div>
-                        </div> <!-- End Latest -->
-
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-9" data-aos="fade-up">
+            @foreach ($photos as $photo)
+            @if($photo->active !== null)
+            <div class="d-md-flex post-entry-2 half">
+                <a href="{{ route('viewPost', ['id' => $photo->id]) }}" class="me-4 thumbnail view-photo" data-photo-id="{{ $photo->id }}">
+                    <img src="{{ asset('/storage/' . $photo->image_url) }}" alt="" class="img-fluid @if($photo->status == 1) copyrighted @endif">
+                </a>
+                <div>
+                    <div class="post-meta"><span class="date">Thời gian</span> <span class="mx-1">&bullet;</span> <span>{{$photo->created_at}}</span></div>
+                    <h3>{{$photo->title}}</h3>
+                    <p>{{$photo->description}}</p>
+                    <div class="d-flex align-items-center author">
+                        <div class="photo"><img src="/home/assets/img/favicon.png" alt="" class="img-fluid"></div>
+                        <div class="name">
+                            <h3 class="m-0 p-0">{{$photo->user->username}}</h3>
+                        </div>
                     </div>
-                </div>
-                <div class="aside-block">
-                    <h3 class="aside-title">Categories</h3>
-                    <ul class="aside-links list-unstyled">
-                        @foreach ( $photos as $item )
-                        <li><a><i class="bi bi-chevron-right"></i> {{$item->category->name}}</a></li>
-
-                        @endforeach
-
-                    </ul>
-                </div><!-- End Categories -->
-
-                <div class="aside-block">
-                    <h3 class="aside-title">Tags</h3>
                     <ul class="aside-tags list-unstyled">
-                        @foreach ( $photos as $item )
-                        <li><a><i class="bi bi-chevron-right"></i> {{$item->tag->name}}</a></li>
-                        @endforeach
+                        <li><a>Category:{{$photo->category->name}}</a></li>
+                        <li><a>Tag:{{$photo->tag->name}}</a></li>
+                        <li><a>Lượt tải:{{$photo->downloads_count}}</a></li>
                     </ul>
-                </div><!-- End Tags -->
+                    </ul>
+                    <div class="post-meta mt-4">
+                        <div>
+                            <a href="{{ route('viewPost', ['id' => $photo->id]) }}" data-photo-id="{{ $photo->id }}" class="btn btn-primary view-photo">
+                                <span>Xem bài viết</span>
+                                @if ($photo->status == 1)
+                                <span><i class="bi bi-eye-slash-fill"></i></span>
+                                @else
+                                <span><i class="bi bi-eye-fill"></i>{{$photo->views}}</span>
+                                @endif
+                            </a>
+                        </div>
+                    </div>
+                    @auth
+                    @if(auth()->user()->id == $photo->user_id || (auth()->user()->role == 'admin' && $photo->user_id == auth()->id()))
+                    <a href="{{ route('postEdit', ['id' => $photo->id]) }}" class="btn btn-warning"><i class="bi bi-pencil-square"></i> Edit</a>
+                    <button class="btn btn-danger delete-post-btn" data-id="{{ $photo->id }}"><i class="bi bi-trash-fill"></i> Delete</button>
+                    @endif
+                    @if(auth()->user()->role == 'admin' && $photo->user_id != auth()->user()->id)
+                    <button class="btn btn-danger delete-post-btn" data-id="{{ $photo->id }}"><i class="bi bi-trash-fill"></i> Delete</button>
+                    @endif
 
+                    @endauth
+                    @if ($photo->status == 0 )
+                    <div class="btn-group" role="group">
+                        @if(auth()->check() || $photo->status == 0 )
+                        @if($photo->status == 0)
+                        <a href="{{ asset('/storage/' . $photo->image_url) }}" download="image.jpg" id="downloadBtn" class="btn btn-primary" data-photo-id="{{ $photo->id }}"><i class="bi bi-download"></i> Download</a>
+                        @endif
+                        <a class="btn btn-info btn-share" data-photo-id="{{ $photo->id }}"><i class="bi bi-share"></i> Share</a>
+                        @else
+                        <button onclick="showLoginAlert()" class="btn btn-warning"><i class="bi bi-exclamation-triangle"></i> Login to Download</button>
+                        <button onclick="showLoginAlert()" class="btn btn-info" data-photo-id="{{ $photo->id }}"><i class="bi bi-share"></i> Login to Share</button>
+                        @endif
+                    </div>
+                    @else
+                    <button disabled class="btn btn-secondary"><i class="bi bi-slash-circle"></i> Download disabled</button>
+                    @endif
+
+
+                </div>
+
+            </div>
+            @endif
+            @endforeach
+
+            <div class="d-flex justify-content-center">
+                {{ $photos->links() }}
             </div>
 
         </div>
+
+
+        <div class="col-md-3">
+            <div class="aside-block">
+                <h3 class="aside-title">Categories</h3>
+                <ul class="aside-links list-unstyled">
+                    @foreach ( $cat as $item )
+                    <li><a href="{{ route('filter.posts', ['cat' => $item->id]) }}">{{ $item->name }}</a></li>
+
+                    @endforeach
+
+                </ul>
+            </div><!-- End Categories -->
+
+            <div class="aside-block">
+                <h3 class="aside-title">Tags</h3>
+                <ul class="aside-tags list-unstyled">
+                    @foreach ( $tag as $item )
+                    <li><a href="{{ route('filter.posts', ['tag' => $item->id]) }}">{{ $item->name }}</a></li>
+                    @endforeach
+                </ul>
+            </div><!-- End Tags -->
+
+        </div>
+
+    </div>
     </div>
     <style>
         .copyrighted {
@@ -168,25 +167,6 @@
                 });
         });
 
-        // $(document).ready(function() {
-        //   $('#searchForm').submit(function(e) {
-        //     e.preventDefault();
-        //     var formData = $(this).serialize();
-
-        //     $.ajax({
-        //       type: 'GET',
-        //       url: '/search',
-        //       data: formData,
-        //       dataType: 'json',
-        //       success: function(response) {
-        //         // Xử lý kết quả tìm kiếm và hiển thị trên trang
-        //       },
-        //       error: function(xhr, status, error) {
-        //         console.error(xhr.responseText);
-        //       }
-        //     });
-        //   });
-        // });
 
         $(document).ready(function() {
             $('.delete-post-btn').click(function(e) {
@@ -232,6 +212,116 @@
                 });
             });
         });
+
+        $(document).ready(function() {
+            $('#downloadBtn').click(function() {
+                var photoId = $(this).data('photo-id');
+
+                // Gửi yêu cầu AJAX để tải hình ảnh
+                $.ajax({
+                    type: 'GET',
+                    url: '/download/' + photoId,
+                    success: function(response) {
+                        // Hiển thị thông báo SweetAlert khi tải hình ảnh thành công
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Tải hình ảnh thành công!',
+                            text: 'Hình ảnh đã được tải xuống thành công.'
+                        });
+                        //window.location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        // Hiển thị thông báo lỗi nếu có lỗi xảy ra
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Lỗi!',
+                            text: 'Đã xảy ra lỗi khi tải hình ảnh.'
+                        });
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function() {
+            $(".view-photo").click(function(event) {
+                event.preventDefault();
+                var photoId = $(this).data("photo-id");
+                $.get("/photos/" + photoId + "/views", function(response) {
+                    console.log(response.success);
+                    // Sau khi yêu cầu AJAX được xử lý thành công, điều hướng người dùng đến trang chi tiết của bài viết
+                    window.location.href = "/viewPost/" + photoId;
+                }).fail(function() {
+                    console.error("Failed to increase views.");
+                });
+            });
+        });
+
+
+
+        $('.btn-share').click(function() {
+            // Lấy ID của bài viết từ thuộc tính data
+            var photoId = $(this).data('photo-id');
+            // Mở modal
+            $('#shareModal').modal('show');
+            // Lưu ID của bài viết vào một trường ẩn trong modal để sử dụng sau này
+            $('#shareModal').find('#photoId').val(photoId);
+        });
+
+
+
+
+        // Xử lý khi người dùng nhấn nút "Chia sẻ" trong modal
+        $('#shareForm').submit(function(event) {
+            event.preventDefault();
+            // Lấy ID của bài viết từ trường ẩn trong modal
+            var photoId = $('#photoId').val();
+            // Lấy địa chỉ email từ trường nhập trong modal
+            var email = $('#emailInput').val();
+            // Gửi yêu cầu AJAX để chia sẻ bài viết
+            $.ajax({
+                type: 'POST',
+                url: '/photos/' + photoId + '/share',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    email: email
+                },
+                success: function(response) {
+                    // Hiển thị thông báo SweetAlert khi chia sẻ thành công
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Chia sẻ thành công!',
+                        text: response.success
+                    });
+                    // Đóng modal sau khi chia sẻ thành công
+                    $('#shareModal').modal('hide');
+                },
+                error: function(xhr, status, error) {
+                    // Hiển thị thông báo SweetAlert khi có lỗi xảy ra
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: 'Đã xảy ra lỗi khi chia sẻ bài viết.'
+                    });
+                }
+            });
+        });
+
+        function showLoginAlert() {
+            sessionStorage.setItem('returnUrl', window.location.href);
+            Swal.fire({
+                icon: 'info',
+                title: 'Vui lòng đăng nhập',
+                text: 'Bạn cần đăng nhập để thực hiện.',
+                showCancelButton: true,
+                confirmButtonText: 'Đăng nhập',
+                cancelButtonText: 'Hủy',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Chuyển hướng người dùng đến trang đăng nhập
+                    window.location.href = '/login';
+                }
+            });
+        }
     </script>
 </section>
 @endsection

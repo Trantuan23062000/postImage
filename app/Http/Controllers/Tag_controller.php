@@ -2,17 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Photo;
+use App\Models\Share;
 use Illuminate\Validation\ValidationException;
 
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class Tag_controller extends Controller
 {
     public function index()
     {
+        $totalCount = Photo::count();
+        $totalDownloads = Photo::sum('downloads_count');
+        $view = Photo::sum('views');
+        $share = Share::count();
+        $user = User::count();
         $tags = Tag::latest()->get(); // Sắp xếp từ mới nhất đến cũ nhất
-        return view('admin.tag.index', compact('tags'));
+        return view('admin.tag.index',  [
+            'totalCount' => $totalCount,
+            'totalDownloads' => $totalDownloads,
+            'view' => $view,
+            'share'=>$share,
+            'user'=>$user,
+            'tags'=>$tags
+        ]);
     }
 
     public function store(Request $request)

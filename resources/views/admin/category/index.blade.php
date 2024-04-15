@@ -1,5 +1,6 @@
 @extends('admin.admin')
 @section('content')
+
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="text-end mb-3">
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategorymodalForm">
@@ -59,6 +60,11 @@
         </div>
     </div>
 </div>
+
+<ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ route('admin') }}">Admin</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Loại bài viết</li>
+    </ol>
 
 <table class="table table-bordered">
     <thead>

@@ -1299,3 +1299,70 @@ section {
 .footer .credits a {
   color: var(--color-white);
 }
+
+
+.post-image {
+  max-width: 200%;
+  max-height: 500px;
+  /* Thay đổi giá trị này tùy thuộc vào kích thước bạn muốn giới hạn */
+}
+
+.copyrighted {
+  filter: blur(5px);
+  /* Áp dụng hiệu ứng làm mờ */
+  -webkit-filter: blur(10px);
+  /* Áp dụng hiệu ứng làm mờ cho trình duyệt webkit-based */
+  opacity: 0.7;
+  /* Giảm độ sáng */
+}
+
+.single-post-content {
+  padding-top: 50px;
+  /* Để tạo không gian trên cùng cho tiêu đề */
+}
+
+.post-title {
+  text-align: center;
+  /* Canh giữa tiêu đề */
+}
+
+.post-description {
+  text-align: justify;
+  /* Justify mô tả */
+  margin-top: 20px;
+  /* Tạo khoảng cách giữa tiêu đề và mô tả */
+}
+
+.post-image {
+  display: block;
+  /* Đảm bảo hình ảnh được hiển thị dưới dạng block để căn giữa */
+  margin: 0 auto;
+  /* Canh giữa hình ảnh */
+  max-width: 100%;
+  /* Đảm bảo hình ảnh không vượt quá kích thước của phần tử cha */
+  height: auto;
+  /* Đảm bảo tỉ lệ khung hình ảnh được duy trì */
+  margin-bottom: 20px;
+  /* Tạo khoảng cách giữa hình ảnh và mô tả */
+}
+
+figcaption {
+  text-align: center; /* Căn giữa nội dung trong figcaption */
+  margin-top: 10px; /* Tạo khoảng cách từ phần mô tả đến hình ảnh */
+  font-size: 16px; /* Điều chỉnh kích cỡ chữ cho phần mô tả */
+  max-width: 100%; /* Giữ cho chiều rộng của figcaption không vượt quá hình ảnh */
+  margin-left: auto; /* Căn giữa figcaption theo chiều ngang */
+  margin-right: auto; /* Căn giữa figcaption theo chiều ngang */
+}
+
+
+.custom-image {
+  max-width: 720px;
+  /* Đặt kích thước tối đa cho chiều rộng */
+  max-height: 720px;
+  /* Đặt kích thước tối đa cho chiều cao */
+  width: auto;
+  /* Đảm bảo chiều rộng tự động điều chỉnh */
+  height: auto;
+  /* Đảm bảo chiều cao tự động điều chỉnh */
+}

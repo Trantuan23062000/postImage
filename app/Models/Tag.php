@@ -16,4 +16,8 @@ class Tag extends Model
     {
         return $this->hasMany(Photo::class);
     }
+    public function scopeSearch($query, $keyword)
+    {
+        return $query->where('name', 'like', "%$keyword%");
+    }
 }
