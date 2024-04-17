@@ -41,8 +41,9 @@ Route::post('/photos/{id}/share', [Photo_Controller::class, 'share'])->name('sha
 
 Route::delete('/admin/deletePost/{id}', [Admin_controller::class, 'destroy'])->name('admin.deletePost');
 Route::get('/admin/user', [User_controller::class, 'index'])->name('admin.user');
+Route::get('/admin/showuser/{id}',[User_controller::class,'showuser'])->name('admin.showuser');
 
-
+Route::delete('/admin/deleteuser/{id}', [User_controller::class, 'deleteUser']);
 
 
 Route::middleware(['auth'])->group(function () {
@@ -50,8 +51,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/updatePost/{id}', [Photo_controller::class, 'update'])->name('updatePost');
     Route::delete('/deletePost/{id}', [Photo_controller::class, 'destroy'])->name('deletePost');
 });
-
-
 
 
 

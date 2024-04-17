@@ -48,7 +48,7 @@ class Admin_controller extends Controller
 
     public function allPost()
     {
-        $posts = Photo::orderBy('created_at', 'desc')->paginate(1);
+        $posts = Photo::orderBy('created_at', 'desc')->paginate(5);
         $totalCount = Photo::count();
         $totalDownloads = Photo::sum('downloads_count');
         $view = Photo::sum('views');

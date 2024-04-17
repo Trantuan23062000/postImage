@@ -19,7 +19,7 @@ class Home_controller extends Controller
     public function index()
     {
         //$photos = Photo::with('user')->get();
-        $photos = Photo::orderBy('created_at', 'desc')->paginate(3);
+        $photos = Photo::orderBy('created_at', 'desc')->paginate(5);
         $cat = Category::all();
         $tag= Tag::all();
         return view('home.index', compact('photos','cat','tag'));
@@ -52,7 +52,7 @@ class Home_controller extends Controller
         $user = new User();
         $user->username = $request->username;
         $user->email = $request->email;
-        $user->role = $request->role;
+        $user->role = $request->input('role', 'user');
         $user->password = $passwordHash;
 
         $user->save();

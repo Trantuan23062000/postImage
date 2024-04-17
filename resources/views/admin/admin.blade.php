@@ -72,12 +72,16 @@
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="/home/admin/assets/img/favicon.png" alt="Profile" class="rounded-circle">
+            @if(Auth::check())
             <span class="d-none d-md-block dropdown-toggle ps-2">{{strtoupper(Auth::user()->username)}}</span>
+            @endif
           </a><!-- End Profile Iamge Icon -->
           @if(Auth::check())
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6>{{strtoupper(Auth::user()->username)}}</h6>
+              @if(Auth::check())
+              <span class="d-none d-md-block dropdown-toggle ps-2">{{ strtoupper(Auth::user()->username) }}</span>
+              @endif
             </li>
             <li>
               <hr class="dropdown-divider">
@@ -373,7 +377,7 @@
           }).then((result) => {
             if (result.isConfirmed) {
               // Nhấn nút "OK", reload trang
-              window.location.reload();
+              window.location.href = "{{ route('admin') }}";
             }
           });
         })

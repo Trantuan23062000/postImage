@@ -69,20 +69,20 @@
                     @endif
 
                     @endauth
-                    @if ($photo->status == 0 )
+                    @if(auth()->check() && $photo->status == 0)
                     <div class="btn-group" role="group">
-                        @if(auth()->check() || $photo->status == 0 )
                         @if($photo->status == 0)
                         <a href="{{ asset('/storage/' . $photo->image_url) }}" download="image.jpg" id="downloadBtn" class="btn btn-primary" data-photo-id="{{ $photo->id }}"><i class="bi bi-download"></i> Download</a>
                         @endif
                         <a class="btn btn-info btn-share" data-photo-id="{{ $photo->id }}"><i class="bi bi-share"></i> Share</a>
-                        @else
-                        <button onclick="showLoginAlert()" class="btn btn-warning"><i class="bi bi-exclamation-triangle"></i> Login to Download</button>
-                        <button onclick="showLoginAlert()" class="btn btn-info" data-photo-id="{{ $photo->id }}"><i class="bi bi-share"></i> Login to Share</button>
-                        @endif
                     </div>
                     @else
-                    <button disabled class="btn btn-secondary"><i class="bi bi-slash-circle"></i> Download disabled</button>
+                    @if($photo->status == 0)
+                    <div class="btn-group" role="group">
+                        <button onclick="showLoginAlert()" class="btn btn-warning"><i class="bi bi-exclamation-triangle"></i> Login to Download</button>
+                        <button onclick="showLoginAlert()" class="btn btn-info" data-photo-id="{{ $photo->id }}"><i class="bi bi-share"></i> Login to Share</button>
+                    </div>
+                    @endif
                     @endif
 
 

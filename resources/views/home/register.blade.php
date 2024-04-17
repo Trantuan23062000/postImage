@@ -71,12 +71,12 @@
                       </div>
                     </div>
 
-                    <div class="col-12">
+                    <!-- <div class="col-12">
                       <select class="form-select" name="role">
                         <option value="user">User</option>
                         <option value="admin">Admin</option>
                       </select>
-                    </div>
+                    </div> -->
 
                     <div class="col-12">
                       <label for="yourUsername" class="form-label">Password</label>

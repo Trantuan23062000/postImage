@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\ResetPassword;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -18,12 +19,13 @@ class User_controller extends Controller
     public function index(Request $request)
     {
         // Lấy tất cả người dùng từ cơ sở dữ liệu
+        $currentUser = Auth::user();
         $query = $request->input('query');
         $totalCount = Photo::count();
         $totalDownloads = Photo::sum('downloads_count');
         $view = Photo::sum('views');
         $share = Share::count();
-        $users = User::orderBy('created_at', 'desc')->paginate(2);
+        $users = User::orderBy('created_at', 'desc')->where('id', '!=', $currentUser->id)->paginate(5);
         $user = User::count();
 
         // Trả về view hiển thị danh sách người dùng với dữ liệu đã lấy được
@@ -108,5 +110,29 @@ class User_controller extends Controller
         ]);
 
         return response()->json(['success' => 'Password reset successfully.']);
+    }
+
+    public function showuser($id)
+    {
+        $user = User::with('photo')->findOrFail($id);
+        return response()->json($user);
+    }
+
+    public function deleteUser($id)
+    {
+        // Tìm người dùng theo ID
+        $user = User::findOrFail($id);
+
+        // Lấy tất cả các bài viết của người dùng
+        $posts = Photo::where('user_id', $user->id)
+            ->orderBy('created_at', 'desc') // Sắp xếp theo thời gian tạo giảm dần
+            ->take(2) // Giới hạn kết quả lấy ra là hai bài viết
+            ->get();
+
+        // Trả về thông tin người dùng và các bài viết của họ
+        return response()->json([
+            'user' => $user,
+            'posts' => $posts
+        ]);
     }
 }

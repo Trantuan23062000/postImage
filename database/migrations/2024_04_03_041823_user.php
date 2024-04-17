@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('avatar')->nullable();
             $table->enum('role', ['user', 'admin'])->default('user');
-            $table->string('token')->nullable();
+            $table->string('password_reset_token')->nullable();
             $table->integer('status')->default(0);
             $table->timestamps();
         });

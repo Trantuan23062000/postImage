@@ -56,4 +56,8 @@ class User extends Authenticatable
     {
         return $query->where('username', 'like', "%$keyword%");
     }
+    public function photo()
+    {
+        return $this->hasMany(Photo::class);
+    }
 }
